@@ -1,6 +1,6 @@
 from app.services.rerank.rerank_service import rerank_documents
 from app.config import SIMILARITY_THRESHOLD
-from app.llm.embedding import embeddings
+from app.llm.embedding import document_embeddings
 from app.services.vector.vector_store import add_embeddings
 
 
@@ -33,7 +33,7 @@ async def web_rerank_node(state):
             approved_results.append(result)
             
             # 문서를 임베딩하고 raw에 추가
-            doc_embedding = embeddings.embed_documents([result["document"]])
+            doc_embedding = document_embeddings.embed_documents([result["document"]])
             metadata = result.get("metadata", {})
             metadata["score"] = result["score"]
             metadata["source_type"] = "web_search"
