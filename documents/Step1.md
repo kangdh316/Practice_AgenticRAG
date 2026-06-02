@@ -237,12 +237,26 @@ llm = ChatGoogleGenerativeAI(
 ## app/llm/embedding.py
 
 ```python
+import os
+
 from langchain_google_genai import (
     GoogleGenerativeAIEmbeddings
 )
 
-embeddings = GoogleGenerativeAIEmbeddings(
-    model="models/text-embedding-004"
+document_embeddings = (
+    GoogleGenerativeAIEmbeddings(
+        google_api_key=os.getenv("GEMINI_API_KEY"),
+        model="models/gemini-embedding-001",
+        task_type="retrieval_document"
+    )
+)
+
+query_embeddings = (
+    GoogleGenerativeAIEmbeddings(
+        google_api_key=os.getenv("GEMINI_API_KEY"),
+        model="models/gemini-embedding-001",
+        task_type="retrieval_query"
+    )
 )
 ```
 
@@ -274,44 +288,80 @@ documents = []
 
 index = None
 
+def initialize_index(dim: int):
 
-def create_index(dim: int):
+    global index
+    global embedding_dim
+
+    embedding_dim = dim
+
+    index = faiss.IndexFlatL2(dim)
+    
+def add_embeddings(
+    embeddings,
+    docs
+):
 
     global index
 
-    index = faiss.IndexFlatL2(dim)
+    if not embeddings:
+        return
 
+    if index is None:
 
-def add_embeddings(embeddings, docs):
+        dim = len(embeddings[0])
 
-    global documents
+        initialize_index(dim)
 
     vectors = np.array(
-        embeddings
-    ).astype("float32")
+        embeddings,
+        dtype="float32"
+    )
 
     index.add(vectors)
 
     documents.extend(docs)
+def similarity_search(
+    query_embedding,
+    top_k=5
+):
 
+    global index
 
-def similarity_search(query_embedding, top_k=5):
+    if index is None:
 
-    D, I = index.search(
-        np.array([query_embedding]).astype("float32"),
+        return []
+
+    if index.ntotal == 0:
+
+        return []
+
+    query_vector = np.array(
+        [query_embedding],
+        dtype="float32"
+    )
+
+    distances, indices = index.search(
+        query_vector,
         top_k
     )
 
     results = []
 
-    for idx, score in zip(I[0], D[0]):
+    for idx, dist in zip(
+        indices[0],
+        distances[0]
+    ):
+
+        if idx < 0:
+            continue
 
         if idx >= len(documents):
             continue
 
         results.append({
             "document": documents[idx],
-            "score": float(score)
+            "score": float(dist)
         })
 
     return results
@@ -503,26 +553,32 @@ async def rerank_node(state):
         for d in docs
     ]
 
-    scores = reranker.predict(pairs)
+    if not pairs:
+        return {
+            "reranked_docs": [],
+            "confidence_score": 0
+        }
+    else:
+        scores = reranker.predict(pairs)
 
-    reranked = []
+        reranked = []
 
-    for doc, score in zip(docs, scores):
+        for doc, score in zip(docs, scores):
 
-        reranked.append({
-            "document": doc["document"],
-            "score": float(score)
-        })
+            reranked.append({
+                "document": doc["document"],
+                "score": float(score)
+            })
 
-    reranked.sort(
-        key=lambda x: x["score"],
-        reverse=True
-    )
+        reranked.sort(
+            key=lambda x: x["score"],
+            reverse=True
+        )
 
-    return {
-        "reranked_docs": reranked[:5],
-        "confidence_score": reranked[0]["score"]
-    }
+        return {
+            "reranked_docs": reranked[:5],
+            "confidence_score": reranked[0]["score"]
+        }
 ```
 
 ---
