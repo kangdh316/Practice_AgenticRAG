@@ -509,7 +509,7 @@ class AgentState(TypedDict):
 ## app/nodes/retrieve_node.py
 
 ```python
-from app.llm.embedding import embeddings
+from app.llm.embedding import query_embeddings as embeddings
 from app.services.vector_store import (
     similarity_search
 )
@@ -687,7 +687,7 @@ builder.add_node(
 )
 
 builder.add_node(
-    "answer",
+    "RAG_answer",
     answer_node
 )
 
@@ -707,19 +707,19 @@ builder.add_conditional_edges(
     "rerank",
     threshold_router,
     {
-        "answer": "answer",
+        "answer": "RAG_answer",
         "web_search": "web_search"
     }
 )
 
 builder.add_edge(
-    "answer",
+    "RAG_answer",
     END
 )
 
 builder.add_edge(
     "web_search",
-    "answer"
+    "RAG_answer"
 )
 
 graph = builder.compile()
