@@ -108,21 +108,13 @@ def add_embeddings(
 
 def similarity_search(
     query_embedding,
-    top_k=5,
-    from_approved=True
+    top_k=5
 ):
-    """
-    유사도 검색
-    
-    Args:
-        query_embedding: 쿼리 임베딩 벡터
-        top_k: 반환할 결과 개수
-        from_approved: True면 approved에서 검색, False면 raw에서 검색
-    """
-
-    index = index_approved if from_approved else index_raw
-    documents = documents_approved if from_approved else documents_raw
-    metadatas = metadatas_approved if from_approved else metadatas_raw
+    # query_embedding(임베딩 모델에 의해 벡터화된 질의) 기준으로 유사한 문서 top_k개를 반환
+    # index(메모리에 적재된 벡터 데이터)
+    # > prod_index와 stage_index로 분리, Web 검색 결과를 stage_index에 적재
+    # > stage_index에서 특정 index를 지정하면 그 index만 prod_index에 추가
+    global index
 
     if index is None:
         return []
