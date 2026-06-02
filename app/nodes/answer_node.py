@@ -6,12 +6,12 @@ async def answer_node(state):
 
     if state.get("context_source") == "WEB":
         docs = state.get(
-            "web_results",
+            "reranked_web_results",
             []
         )
         context = "\n\n".join([
 
-            d["content"]
+            d["document"]
 
             for d in docs[:3]
         ])
