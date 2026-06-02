@@ -68,7 +68,10 @@ def similarity_search(
     query_embedding,
     top_k=5
 ):
-
+    # query_embedding(임베딩 모델에 의해 벡터화된 질의) 기준으로 유사한 문서 top_k개를 반환
+    # index(메모리에 적재된 벡터 데이터)
+    # > prod_index와 stage_index로 분리, Web 검색 결과를 stage_index에 적재
+    # > stage_index에서 특정 index를 지정하면 그 index만 prod_index에 추가
     global index
 
     if index is None:
