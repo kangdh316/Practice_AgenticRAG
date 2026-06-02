@@ -17,10 +17,34 @@ print()
 print("=== SEARCH RESULTS ===")
 print()
 
-for r in results:
-    print("SCORE:", r["score"])
-    print("DOC:")
+for i, r in enumerate(results, 1):
+    print(f"[Result {i}]")
+    print(f"SCORE: {r['score']:.4f}")
+    print()
+    
+    metadata = r.get("metadata", {})
+    if metadata:
+        print("=== METADATA ===")
+        if metadata.get("title"):
+            print(f"제목: {metadata['title']}")
+        if metadata.get("author"):
+            print(f"저자: {metadata['author']}")
+        if metadata.get("year"):
+            print(f"연도: {metadata['year']}")
+        if metadata.get("source"):
+            print(f"출처: {metadata['source']}")
+        if metadata.get("source_url"):
+            print(f"URL: {metadata['source_url']}")
+        if metadata.get("category"):
+            print(f"카테고리: {metadata['category']}")
+        if metadata.get("section"):
+            print(f"섹션: {metadata['section']}")
+        if metadata.get("tags"):
+            print(f"태그: {', '.join(metadata['tags'])}")
+        print()
+    
+    print("=== DOCUMENT CONTENT ===")
     print(r["document"])
-    print("METADATA:")
-    print(r["metadata"])
-    print("-" * 50)
+    print()
+    print("-" * 60)
+    print()
