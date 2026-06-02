@@ -1,7 +1,15 @@
+from app.services.web.search_service import (
+    search_web
+)
+
+
 async def web_search_node(state):
 
-    # 추후 Tavily API 연결
+    results = await search_web(
+        state["question"]
+    )
 
     return {
-        "web_results": []
+        "context_source": "WEB",
+        "web_results": results
     }

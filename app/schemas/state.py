@@ -7,4 +7,5 @@ class AgentState(TypedDict, total=False):
     reranked_docs: list
     confidence_score: float
     web_results: list
+    context_source: str
     answer: str

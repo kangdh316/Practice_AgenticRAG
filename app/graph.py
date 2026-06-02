@@ -3,7 +3,7 @@ from langgraph.graph import (
     END
 )
 
-from app.state import AgentState
+from app.schemas.state import AgentState
 
 from app.nodes.retrieve_node import retrieve_node
 from app.nodes.rerank_node import rerank_node

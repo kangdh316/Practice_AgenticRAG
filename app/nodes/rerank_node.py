@@ -6,7 +6,9 @@ async def rerank_node(state):
     
     reranked = await rerank_documents( state["question"], state["retrieved_docs"] )
     
-    return { "reranked_docs": reranked,
+    return { 
+             "context_source": "RAG",
+             "reranked_docs": reranked,
              "confidence_score": ( reranked[0]["score"]
                                    if reranked
                                    else 0.0 )
