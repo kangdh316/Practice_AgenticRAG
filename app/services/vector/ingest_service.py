@@ -9,13 +9,14 @@ from app.services.vector.vector_store import (
 )
 
 
-async def ingest_document(text, metadata=None):
+async def ingest_document(text, metadata=None, to_approved=True):
     """
     문서를 임베딩하여 벡터 저장소에 추가
     
     Args:
         text: 문서 내용
         metadata: 각 청크에 적용할 메타정보 (딕셔너리 또는 딕셔너리 리스트)
+        to_approved: True면 approved에 저장, False면 raw에 저장
     """
 
     chunks = split_text(text)
@@ -37,7 +38,8 @@ async def ingest_document(text, metadata=None):
     add_embeddings(
         vectors,
         chunks,
-        metadata_list
+        metadata_list,
+        to_approved=to_approved
     )
 
     return chunks
