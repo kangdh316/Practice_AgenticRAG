@@ -509,7 +509,7 @@ class AgentState(TypedDict):
 ## app/nodes/retrieve_node.py
 
 ```python
-from app.llm.embedding import embeddings
+from app.llm.embedding import query_embeddings as embeddings
 from app.services.vector_store import (
     similarity_search
 )
