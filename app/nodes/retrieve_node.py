@@ -1,20 +1,9 @@
-from app.llm.embedding import query_embeddings as embeddings
-from app.services.vector_store import (
-    similarity_search
-)
-
+from app.services.vector.retrieval_service import retrieve_documents
 
 async def retrieve_node(state):
 
-    query_embedding = embeddings.embed_query(
-        state["question"]
-    )
+    print("RETRIEVE NODE START")
+    
+    docs = await retrieve_documents( state["question"] )
 
-    results = similarity_search(
-        query_embedding,
-        top_k=10
-    )
-
-    return {
-        "retrieved_docs": results
-    }
+    return { "retrieved_docs": docs }  

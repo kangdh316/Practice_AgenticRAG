@@ -1,41 +1,13 @@
-from app.llm.reranker import reranker
-
+from app.services.rerank.rerank_service import ( rerank_documents )
 
 async def rerank_node(state):
 
-    docs = state["retrieved_docs"]
-
-    pairs = [
-        [
-            state["question"],
-            d["document"]
-        ]
-        for d in docs
-    ]
-
-    if not pairs:
-        return {
-            "reranked_docs": [],
-            "confidence_score": 0
-        }
-    else:
-        scores = reranker.predict(pairs)
-
-        reranked = []
-
-        for doc, score in zip(docs, scores):
-
-            reranked.append({
-                "document": doc["document"],
-                "score": float(score)
-            })
-
-        reranked.sort(
-            key=lambda x: x["score"],
-            reverse=True
-        )
-
-        return {
-            "reranked_docs": reranked[:5],
-            "confidence_score": reranked[0]["score"]
-        }
+    print("RERANK NODE START")
+    
+    reranked = await rerank_documents( state["question"], state["retrieved_docs"] )
+    
+    return { "reranked_docs": reranked,
+             "confidence_score": ( reranked[0]["score"]
+                                   if reranked
+                                   else 0.0 )
+            }

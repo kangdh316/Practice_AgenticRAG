@@ -1,22 +1,10 @@
-from typing import TypedDict, List
+from typing import TypedDict
 
 
-class AgentState(TypedDict):
-
+class AgentState(TypedDict, total=False):
     question: str
-
-    retrieved_docs: List[dict]
-
-    reranked_docs: List[dict]
-
+    retrieved_docs: list
+    reranked_docs: list
     confidence_score: float
-
-    web_results: List[str]
-
-    crawled_docs: List[str]
-
-    entities: List[str]
-
-    graph_context: List[str]
-
+    web_results: list
     answer: str
