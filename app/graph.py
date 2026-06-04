@@ -27,6 +27,7 @@ builder.add_node(
 builder.set_entry_point("retrieve")
 
 builder.add_edge("retrieve", "rerank")
+builder.add_edge("retrieve", "rerank")
 
 builder.add_conditional_edges(
     "rerank",
@@ -37,6 +38,8 @@ builder.add_conditional_edges(
     }
 )
 
+builder.add_edge("RAG_answer", END)
+builder.add_edge("web_search", "RAG_answer")
 builder.add_edge("RAG_answer", END)
 builder.add_edge("web_search", "RAG_answer")
 

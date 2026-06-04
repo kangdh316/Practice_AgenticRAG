@@ -100,6 +100,9 @@ async def answer_node(state):
     if state.get("context_source") == "WEB":
         faiss_manager.save_temp_documents(docs)
 
+    if state.get("context_source") == "WEB":
+        faiss_manager.save_temp_documents(docs)
+
     return {
         "answer": result.content
     }
