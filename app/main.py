@@ -5,26 +5,18 @@ from pydantic import BaseModel
 from typing import List
 
 from app.graph import graph
-from app.startup import ( initialize_vector_store )
-from app.services.vector.retrieval_service import retrieve_documents
-from app.services.vector.vector_store import get_stats
-
-
-class SearchRequest(BaseModel):
-    query: str
-    top_k: int = 10
-
-
-class ApprovalRequest(BaseModel):
-    indices: List[int]
-
+from app.container import faiss_manager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    initialize_vector_store()
+    faiss_manager.load_memory()
     yield
 
 app = FastAPI(lifespan=lifespan)
+
+@app.get("/temp")
+async def get_temp_vector_store():
+    return faiss_manager.get_temp_documents()
 
 @app.post("/chat")
 async def chat(req: dict):

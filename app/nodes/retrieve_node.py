@@ -4,6 +4,10 @@ async def retrieve_node(state):
 
     print("RETRIEVE NODE START")
     
-    docs = await retrieve_documents( state["question"] )
+    try:
+        docs = await retrieve_documents( state["question"] )
+    except Exception as e:
+        print(f"Error occurred while retrieving documents: {e}")
+        docs = []
 
     return { "retrieved_docs": docs }  

@@ -1,0 +1,9 @@
+[
+  {
+    "url": "https://docs.cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-fastapi-service?hl=ko",
+    "title": "빠른 시작: Cloud Run을 사용하여 Python(FastAPI) 웹 앱을 Google Cloud에 배포  |  Google Cloud Documentation",
+    "content": "# 빠른 시작: Python(FastAPI) 웹 앱 빌드 및 Cloud Run에 배포. Cloud Run을 사용하여 코드 샘플에서 단일 명령어로 'Hello World' 웹 애플리케이션을 빌드하고 Google Cloud에 배포하는 방법을 알아봅니다. 이 빠른 시작의 단계를 따르면 소스 코드에서 배포할 때 Cloud Run에서 Dockerfile을 자동으로 빌드합니다. Python 빌드팩이 Cloud Run 소스 배포의 기본 진입점을 결정하는 방법에 대한 자세한 내용은 Python 애플리케이션 빌드를 참조하세요. In the Google Cloud console, on the project selector page,. select or create a Google Cloud project. Cloud Run Admin, Cloud Run Source Developer, Logs Viewer. In the Google Cloud console, go to the **IAM** page. Enable the Cloud Run Admin API and Cloud Build APIs. Cloud Run Admin API를 사용 설정하면 Compute Engine 기본 서비스 계정이 자동으로 생성됩니다. 이 동작을 재정의하지 않는 한 Cloud Build는 자동으로 Compute Engine 기본 서비스 계정을 기본 Cloud Build 서비스 계정으로 사용하여 소스 코드와 Cloud Run 리소스를 빌드합니다. Cloud Build에서 소스를 빌드할 수 있게 하려면 관리자에게 프로젝트의 Compute Engine 기본 서비스 계정에 Cloud Run 빌더(`roles/run.builder`)를 부여해 달라고 요청하세요.",
+    "score": 0.9964619,
+    "raw_content": null
+  }
+]
