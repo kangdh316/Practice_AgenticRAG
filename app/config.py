@@ -12,7 +12,5 @@ RERANK_TOP_K = 5
 SIMILARITY_THRESHOLD = 0.72
 
 TRUSTED_DOMAINS = [
-    "law.go.kr",
-    "g2b.go.kr",
-    "moe.go.kr",
+    "google.com"
 ]

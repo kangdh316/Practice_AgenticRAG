@@ -1,4 +1,5 @@
 from app.llm.gemini import llm
+from app.container import faiss_manager
 
 async def answer_node(state):
 
@@ -37,6 +38,9 @@ async def answer_node(state):
         Question: {state["question"]} """
 
     result = await llm.ainvoke( prompt )
+
+    if state.get("context_source") == "WEB":
+        faiss_manager.save_temp_documents(docs)
 
     return {
         "answer": result.content

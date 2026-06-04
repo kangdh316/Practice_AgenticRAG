@@ -13,32 +13,14 @@ from app.nodes.threshold_node import threshold_router
 
 builder = StateGraph(AgentState)
 
-builder.add_node(
-    "retrieve",
-    retrieve_node
-)
-
-builder.add_node(
-    "rerank",
-    rerank_node
-)
-
-builder.add_node(
-    "RAG_answer",
-    answer_node
-)
-
-builder.add_node(
-    "web_search",
-    web_search_node
-)
+builder.add_node("retrieve", retrieve_node)
+builder.add_node("rerank", rerank_node)
+builder.add_node("RAG_answer", answer_node)
+builder.add_node("web_search", web_search_node)
 
 builder.set_entry_point("retrieve")
 
-builder.add_edge(
-    "retrieve",
-    "rerank"
-)
+builder.add_edge("retrieve", "rerank")
 
 builder.add_conditional_edges(
     "rerank",
@@ -49,14 +31,7 @@ builder.add_conditional_edges(
     }
 )
 
-builder.add_edge(
-    "RAG_answer",
-    END
-)
-
-builder.add_edge(
-    "web_search",
-    "RAG_answer"
-)
+builder.add_edge("RAG_answer", END)
+builder.add_edge("web_search", "RAG_answer")
 
 graph = builder.compile()
