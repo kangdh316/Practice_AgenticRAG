@@ -15,6 +15,10 @@ app = FastAPI(lifespan=lifespan)
 async def get_temp_vector_store():
     return faiss_manager.get_temp_documents()
 
+@app.post("/approve")
+async def approve_temp_documents(req: dict):
+    faiss_manager.promote_temp_to_prod(req["index_list"])
+
 @app.post("/chat")
 async def chat(req: dict):
 

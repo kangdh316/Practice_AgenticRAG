@@ -3,9 +3,11 @@ from __future__ import annotations
 import threading
 from pathlib import Path
 from typing import List
+import hashlib
 
 import faiss
 import numpy as np
+from sympy import python
 
 from app.services.vector.serializer import (
     save_metadata,
@@ -65,22 +67,30 @@ class FAISSManager:
 
         return faiss.IndexFlatIP(self.dim)
 
-    def _normalize(
+    def _to_faiss_vector(
         self,
-        embeddings: np.ndarray,
+        embedding,
     ):
 
-        # faiss.normalize_L2(embeddings)
-
-        # return embeddings
-
-        norms = np.linalg.norm(
-        embeddings,
-        axis=1,
-        keepdims=True
+        embedding = np.asarray(
+            embedding,
+            dtype=np.float32,
         )
 
-        return embeddings / norms
+        if embedding.ndim == 1:
+
+            embedding = embedding.reshape(
+                1,
+                -1,
+            )
+
+        return embedding
+
+    def _create_content_hash(
+        self, text: str,
+    ) -> str:
+        normalized = ( text.strip() .replace("\r\n", "\n") )
+        return hashlib.sha256( normalized.encode("utf-8") ).hexdigest()
 
     def _build_index_from_docs(
         self,
@@ -94,16 +104,7 @@ class FAISSManager:
         
         doc_contents = ", ".join([doc["content"] for doc in docs])
 
-        cutted_contents = doc_contents[:50]
-
-        embeddings = np.array(
-            document_embeddings.embed_documents( cutted_contents ) ,
-            dtype=np.float32,
-        )
-
-        embeddings = self._normalize(
-            embeddings
-        )
+        embeddings = self._to_faiss_vector(document_embeddings(doc_contents))
 
         index.add(embeddings)
 
@@ -183,65 +184,69 @@ class FAISSManager:
             final_docs = existing_docs.copy()
 
             for new_doc in docs:
+                content = new_doc["content"]
 
+                # -----------------------------------------
+                # 1. content hash 생성
+                # -----------------------------------------
+                content_hash = ( self._create_content_hash( content ) )
+
+                # -------------------------------------------------
+                # 2. hash dedup
+                # -------------------------------------------------
                 is_duplicate = False
-
-                # -------------------------------------------------
-                # 1. hash dedup
-                # -------------------------------------------------
 
                 if dedup:
 
                     for existing in existing_docs:
-
-                        if (
-                            existing["content_hash"]
-                            ==
-                            new_doc["content_hash"]
-                        ):
-
+                        if (existing.get("content_hash") == content_hash):
                             is_duplicate = True
                             break
 
                 if is_duplicate:
                     continue
 
-                # -------------------------------------------------
-                # 2. similarity dedup
-                # -------------------------------------------------
+                # -----------------------------------------
+                # 3. embedding 생성
+                # -----------------------------------------
+                embedding = document_embeddings( content )
+                embedding = np.asarray( embedding, dtype=np.float32, )
 
+                # -------------------------------------------------
+                # 4. similarity dedup
+                # -------------------------------------------------
                 if dedup and existing_docs:
 
                     similar_results = (
                         self._similarity_search_docs(
-                            query_embedding=
-                                new_doc["embedding"],
+                            query_embedding=embedding,
                             docs=existing_docs,
                             top_k=1,
                         )
                     )
 
                     if similar_results:
+                        top_score = (similar_results[0]["score"])
 
-                        top_score = (
-                            similar_results[0]["score"]
-                        )
+                        if (top_score >= similarity_threshold):
+                            continue
 
-                        if (
-                            top_score
-                            >= similarity_threshold
-                        ):
-
-                            is_duplicate = True
-
-                if not is_duplicate:
-
-                    final_docs.append(new_doc)
-
-            self._save_target(
-                "temp",
-                final_docs,
-            )
+                # -----------------------------------------
+                # 5. save document
+                # -----------------------------------------
+                save_doc = {
+                    **new_doc,
+                    "content_hash": content_hash,
+                }
+                
+                final_docs.append(save_doc)
+                
+                # 중복 검사 대상에도 즉시 반영
+                existing_docs.append(save_doc)
+            # -----------------------------------------
+            # save
+            # -----------------------------------------
+            self._save_target( "temp", final_docs, )
 
     # =========================================================
     # temp 조회
@@ -283,6 +288,8 @@ class FAISSManager:
                 "prod",
                 prod_docs,
             )
+
+        self.load_memory()
 
     # =========================================================
     # delete by id
@@ -361,8 +368,6 @@ class FAISSManager:
             dtype=np.float32,
         )
 
-        query = self._normalize(query)
-
         scores, indices = (
             self.memory_index.search(
                 query,
@@ -396,7 +401,7 @@ class FAISSManager:
 
     def _similarity_search_docs(
         self,
-        query_embedding: list[float],
+        query_embedding,
         docs: list[dict],
         top_k: int = 1,
     ):
@@ -408,12 +413,13 @@ class FAISSManager:
             docs
         )
 
-        query = np.array(
-            [query_embedding],
+        query = np.asarray(
+            query_embedding,
             dtype=np.float32,
         )
 
-        query = self._normalize(query)
+        if query.ndim == 1:
+            query = query.reshape( 1, -1, )
 
         scores, indices = temp_index.search(
             query,

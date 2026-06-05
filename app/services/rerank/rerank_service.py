@@ -4,7 +4,7 @@ async def rerank_documents( question, docs ):
     if not docs:
         return []
     
-    pairs = [ [question, d["document"]] for d in docs ]
+    pairs = [ [question, d["document"]["content"]] for d in docs ]
     scores = reranker.predict( pairs )
     reranked = []
 

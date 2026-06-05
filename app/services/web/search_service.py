@@ -13,11 +13,11 @@ async def search_web(query: str):
 
     response = client.search(
         query=query,
-        include_domains=TRUSTED_DOMAINS,
+        #include_domains=TRUSTED_DOMAINS,
         include_images=False,
         include_favicon=False,
         include_usage=False,
-        max_results=1
+        max_results=10
     )
 
     return response["results"]
