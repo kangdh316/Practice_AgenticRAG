@@ -1,0 +1,18 @@
+[
+  {
+    "url": "https://codelabs.developers.google.com/codelabs/cloud-run/cloud-run-hello-fastapi?hl=ko",
+    "title": "Python(FastAPI)으로 Cloud Run 시작하기 - Google Codelabs",
+    "content": "# Python (FastAPI)으로 Cloud Run 시작. Cloud Run은 HTTP 요청을 사용하여 호출 가능한 스테이트리스(Stateless) 컨테이너를 실행할 수 있는 관리형 컴퓨팅 플랫폼입니다. Cloud Run은 Knative 오픈소스 프로젝트를 기반으로 빌드되므로 여러 플랫폼에 워크로드를 자유롭게 이동할 수 있습니다. 이 튜토리얼의 목표는 간단한 FastAPI 웹 애플리케이션을 만들어 Cloud Run에 배포하는 것입니다. **참고:** Gmail 계정을 사용하는 경우 기본 위치를 **조직 없음**으로 설정된 그대로 둘 수 있습니다. ## **Cloud Shell 시작**. Google Cloud를 노트북에서 원격으로 실행할 수 있지만, 이 튜토리얼에서는 Cloud에서 실행되는 명령줄 환경인 Cloud Shell을 사용합니다. Cloud Shell에 연결되면 인증이 완료되었고 프로젝트가 해당 프로젝트 ID로 설정된 것을 확인할 수 있습니다. 이 도구는 Cloud Shell에 사전 설치되어 있습니다. **명령어를 처음 실행할 때 인증하라는 메시지가 표시될 수 있습니다.** 자세한 내용은 gcloud 명령줄 도구 개요를 참조하세요. 이 단계에서는 HTTP 요청에 응답하는 'Hello World' FastAPI Python 애플리케이션을 빌드합니다. Cloud Shell을 사용하여 `helloworld-fastapi`라는 작업 디렉터리를 만들고 해당 디렉터리로 전환합니다. `gcloud run deploy helloworld-fastapi \\. 이 짧은 실습은 gcloud 명령줄을 사용하여 진행되었지만 Cloud Run은 Cloud 콘솔 ( console.cloud.google.com/run)을 사용하여도 사용할 수 있습니다.",
+    "score": 0.994615,
+    "raw_content": null,
+    "content_hash": "90a850f530fd6f71b282a1a3e9ad9ae6360300a1c03a2061d6a42d4f40316711"
+  },
+  {
+    "url": "https://docs.cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-fastapi-service?hl=ko",
+    "title": "빠른 시작: Python(FastAPI) 웹 앱 빌드 및 Cloud Run에 배포",
+    "content": "# 빠른 시작: Python(FastAPI) 웹 앱 빌드 및 Cloud Run에 배포. Cloud Run을 사용하여 코드 샘플에서 단일 명령어로 'Hello World' 웹 애플리케이션을 빌드하고 Google Cloud에 배포하는 방법을 알아봅니다. 이 빠른 시작의 단계를 따르면 소스 코드에서 배포할 때 Cloud Run에서 Dockerfile을 자동으로 빌드합니다. Python 빌드팩이 Cloud Run 소스 배포의 기본 진입점을 결정하는 방법에 대한 자세한 내용은 Python 애플리케이션 빌드를 참조하세요. In the Google Cloud console, on the project selector page,. select or create a Google Cloud project. Cloud Run Admin, Cloud Run Source Developer, Logs Viewer. In the Google Cloud console, go to the **IAM** page. Enable the Cloud Run Admin API and Cloud Build APIs. Cloud Run Admin API를 사용 설정하면 Compute Engine 기본 서비스 계정이 자동으로 생성됩니다. 이 동작을 재정의하지 않는 한 Cloud Build는 자동으로 Compute Engine 기본 서비스 계정을 기본 Cloud Build 서비스 계정으로 사용하여 소스 코드와 Cloud Run 리소스를 빌드합니다. Cloud Build에서 소스를 빌드할 수 있게 하려면 관리자에게 프로젝트의 Compute Engine 기본 서비스 계정에 Cloud Run 빌더(`roles/run.builder`)를 부여해 달라고 요청하세요.",
+    "score": 0.9941347,
+    "raw_content": null,
+    "content_hash": "a92a93d5b9e1c79a53b31a722472b5557393250985421c832212f24572a5d462"
+  }
+]

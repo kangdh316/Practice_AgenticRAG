@@ -1,21 +1,17 @@
-import os
+from sentence_transformers import SentenceTransformer
 
-from langchain_google_genai import (
-    GoogleGenerativeAIEmbeddings
-)
+import numpy as np
 
-document_embeddings = (
-    GoogleGenerativeAIEmbeddings(
-        google_api_key=os.getenv("GEMINI_API_KEY"),
-        model="models/gemini-embedding-001",
-        task_type="retrieval_document"
-    )
-)
+_model = SentenceTransformer("BAAI/bge-m3")
 
-query_embeddings = (
-    GoogleGenerativeAIEmbeddings(
-        google_api_key=os.getenv("GEMINI_API_KEY"),
-        model="models/gemini-embedding-001",
-        task_type="retrieval_query"
-    )
-)
+def document_embeddings(text: str,) -> list[float]:
+
+    embedding = _model.encode(f"passage: {text}", normalize_embeddings=True,)
+
+    return embedding.tolist()
+
+def query_embeddings(text: str,) -> list[float]:
+
+    embedding = _model.encode(f"query: {text}", normalize_embeddings=True,)
+
+    return embedding.tolist()
